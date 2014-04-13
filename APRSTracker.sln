@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APRSTracker", "APRSTracker\APRSTracker.csproj", "{7AAA88D0-E863-4BF9-A199-3E9D02E48C59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maps", "Maps\Maps.csproj", "{2DA74BA8-06ED-4B55-BEA0-65AE7FA1D36A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AprsParser", "AprsParser\AprsParser.csproj", "{9A89B11E-267E-456B-A843-863C32A9D2D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoT", "CoT\CoT.csproj", "{9177F4F0-7B96-4F35-BA0F-9C107A02494A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication", "Communication\Communication.csproj", "{15B24043-72FA-49ED-A971-8409DF3F8DC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Location", "Location\Location.csproj", "{379E218E-656E-4E29-9C65-073629F38060}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AprsWebClient", "AprsWebClient\AprsWebClient.csproj", "{C039E544-04A4-477F-B94A-CD093DD69A6E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7AAA88D0-E863-4BF9-A199-3E9D02E48C59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AAA88D0-E863-4BF9-A199-3E9D02E48C59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AAA88D0-E863-4BF9-A199-3E9D02E48C59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AAA88D0-E863-4BF9-A199-3E9D02E48C59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DA74BA8-06ED-4B55-BEA0-65AE7FA1D36A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DA74BA8-06ED-4B55-BEA0-65AE7FA1D36A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DA74BA8-06ED-4B55-BEA0-65AE7FA1D36A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DA74BA8-06ED-4B55-BEA0-65AE7FA1D36A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A89B11E-267E-456B-A843-863C32A9D2D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A89B11E-267E-456B-A843-863C32A9D2D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A89B11E-267E-456B-A843-863C32A9D2D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A89B11E-267E-456B-A843-863C32A9D2D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9177F4F0-7B96-4F35-BA0F-9C107A02494A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9177F4F0-7B96-4F35-BA0F-9C107A02494A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9177F4F0-7B96-4F35-BA0F-9C107A02494A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9177F4F0-7B96-4F35-BA0F-9C107A02494A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15B24043-72FA-49ED-A971-8409DF3F8DC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15B24043-72FA-49ED-A971-8409DF3F8DC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15B24043-72FA-49ED-A971-8409DF3F8DC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15B24043-72FA-49ED-A971-8409DF3F8DC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{379E218E-656E-4E29-9C65-073629F38060}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{379E218E-656E-4E29-9C65-073629F38060}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{379E218E-656E-4E29-9C65-073629F38060}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{379E218E-656E-4E29-9C65-073629F38060}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C039E544-04A4-477F-B94A-CD093DD69A6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C039E544-04A4-477F-B94A-CD093DD69A6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C039E544-04A4-477F-B94A-CD093DD69A6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C039E544-04A4-477F-B94A-CD093DD69A6E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
