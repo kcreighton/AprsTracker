@@ -37,6 +37,20 @@ namespace APRSTracker
             AprsParser.Parser.OnParsed += Parser_OnParsed;
         }
 
+        #region event handlers
+ 
+        void Form1_Load(object sender, EventArgs e)
+        {
+            RestoreSettings();
+
+            _aprsWebClient.OnResponse += _aprsWebClient_OnResponse;
+        }
+
+        void _udpClient_MessageSent(object sender, EventArgs e)
+        {
+            UpdateOutput("Sent Cot: " + sender);
+        }
+
         void Parser_OnParsed(object sender, EventArgs e)
         {
             var location = sender as LocationObject;
@@ -45,22 +59,13 @@ namespace APRSTracker
             {
                 if (!string.IsNullOrEmpty(location.Error))
                 {
-                    UpdateOutput("Call sign: " + location.Srccall +  " Error:  " + location.Error);
+                    UpdateOutput("Call sign: " + location.Srccall + " Error:  " + location.Error);
                 }
                 else
                 {
                     UpdateOutput(location.ToString());
                 }
             }
-        }
-
-        #region event handlers
- 
-        void Form1_Load(object sender, EventArgs e)
-        {
-            RestoreSettings();
-
-            _aprsWebClient.OnResponse += _aprsWebClient_OnResponse;
         }
 
         void _aprsWebClient_OnResponse(object sender, EventArgs e)
@@ -196,8 +201,9 @@ namespace APRSTracker
             }
 
             _udpClient = new UdpClient(textBoxCotIp.Text, textBoxCotPort.Text);
+            _udpClient.MessageSent += _udpClient_MessageSent;
         }
-
+        
         private void EmitCot(LocationObject location)
         { 
             if(_udpClient == null)
