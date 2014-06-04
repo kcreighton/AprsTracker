@@ -38,6 +38,9 @@
             this.textBoxCotIp = new System.Windows.Forms.TextBox();
             this.checkBoxCot = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.textBoxLogPath = new System.Windows.Forms.TextBox();
+            this.buttonSetPath = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxApiKey = new System.Windows.Forms.TextBox();
             this.textBoxOutput = new System.Windows.Forms.TextBox();
@@ -78,7 +81,7 @@
             // checkBoxWeb
             // 
             this.checkBoxWeb.AutoSize = true;
-            this.checkBoxWeb.Location = new System.Drawing.Point(9, 83);
+            this.checkBoxWeb.Location = new System.Drawing.Point(5, 167);
             this.checkBoxWeb.Name = "checkBoxWeb";
             this.checkBoxWeb.Size = new System.Drawing.Size(103, 17);
             this.checkBoxWeb.TabIndex = 3;
@@ -100,7 +103,7 @@
             this.groupBoxCot.Controls.Add(this.textBoxCotPort);
             this.groupBoxCot.Controls.Add(this.textBoxCotIp);
             this.groupBoxCot.Controls.Add(this.checkBoxCot);
-            this.groupBoxCot.Location = new System.Drawing.Point(4, 180);
+            this.groupBoxCot.Location = new System.Drawing.Point(4, 252);
             this.groupBoxCot.Name = "groupBoxCot";
             this.groupBoxCot.Size = new System.Drawing.Size(118, 95);
             this.groupBoxCot.TabIndex = 5;
@@ -133,6 +136,9 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.textBoxLogPath);
+            this.groupBox1.Controls.Add(this.buttonSetPath);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textBoxApiKey);
             this.groupBox1.Controls.Add(this.textBoxCallsign);
@@ -141,15 +147,41 @@
             this.groupBox1.Controls.Add(this.checkBoxWeb);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(119, 154);
+            this.groupBox1.Size = new System.Drawing.Size(119, 243);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Track";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(16, 81);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(60, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Log Folder:";
+            // 
+            // textBoxLogPath
+            // 
+            this.textBoxLogPath.Location = new System.Drawing.Point(16, 100);
+            this.textBoxLogPath.Name = "textBoxLogPath";
+            this.textBoxLogPath.Size = new System.Drawing.Size(100, 20);
+            this.textBoxLogPath.TabIndex = 7;
+            // 
+            // buttonSetPath
+            // 
+            this.buttonSetPath.Location = new System.Drawing.Point(13, 126);
+            this.buttonSetPath.Name = "buttonSetPath";
+            this.buttonSetPath.Size = new System.Drawing.Size(49, 23);
+            this.buttonSetPath.TabIndex = 6;
+            this.buttonSetPath.Text = "Set";
+            this.buttonSetPath.UseVisualStyleBackColor = true;
+            this.buttonSetPath.Click += new System.EventHandler(this.buttonSetPath_Click);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(18, 105);
+            this.label2.Location = new System.Drawing.Point(14, 189);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(48, 13);
             this.label2.TabIndex = 5;
@@ -157,13 +189,15 @@
             // 
             // textBoxApiKey
             // 
-            this.textBoxApiKey.Location = new System.Drawing.Point(12, 121);
+            this.textBoxApiKey.Location = new System.Drawing.Point(8, 205);
             this.textBoxApiKey.Name = "textBoxApiKey";
             this.textBoxApiKey.Size = new System.Drawing.Size(100, 20);
             this.textBoxApiKey.TabIndex = 4;
             // 
             // textBoxOutput
             // 
+            this.textBoxOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxOutput.Location = new System.Drawing.Point(155, 349);
             this.textBoxOutput.Multiline = true;
             this.textBoxOutput.Name = "textBoxOutput";
@@ -240,6 +274,9 @@
         private System.Windows.Forms.Button buttonSave;
         private System.Windows.Forms.Panel panelSettings;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox textBoxLogPath;
+        private System.Windows.Forms.Button buttonSetPath;
     }
 }
 
