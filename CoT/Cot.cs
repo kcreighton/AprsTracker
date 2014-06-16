@@ -20,13 +20,14 @@ namespace CoT
             // want time string in this format:
             //2014-04-07T22:52:48.61Z 
 
-            return string.Format(_cotTemplate, uid, time, time, GetStaleTime(), lat, lng, hae);
+            return string.Format(_cotTemplate, uid, time, GetStaleTime(), lat, lng, hae);
         }
 
         public static string GetCot(LocationObject location)
         {
             // Do we want to add anything to the callsign for the ID?
-            return string.Format(_cotTemplate, location.Srccall, location.Lasttime, location.Lasttime, GetStaleTime(), location.Lat, location.Lng, location.Hae);
+            //"<?xml version=\"1.0\" standalone=\"yes\"?><event version=\"2.0\" uid=\"{0}\" type=\"a-f-A\" how=\"m-r\" time=\"{1}\" start=\"{1}\" stale=\"{2}\"><point lat=\"{3}\" lon=\"{4}\" ce=20\" le=\"20\" hae=\"{5}\" /></event>\"";
+            return string.Format(_cotTemplate, location.Srccall, location.Lasttime, GetStaleTime(), location.Lat, location.Lng, location.Hae);
         }
 
         private static string GetStaleTime()
