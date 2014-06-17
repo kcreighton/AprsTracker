@@ -13,7 +13,7 @@ namespace CoT
         //ToDo do we need flowtags? I don't think so...
         //private string _cotTemplate =  "<?xml version=\"1.0\" standalone=\"yes\"?><event version=\"2.0\" uid=\"{0}\" type=\"a-f-A\" how=\"m-r\" time=\"{1}\" start=\"{1}\" stale=\"{2}\"><point lat=\"{3}\" lon=\"{4}\" ce=20\" le=\"20\" hae=\"{5}\" /><detail><_flow-tags_ SCG=\"2014-04-07T22:53:27.95Z\" /></detail></event>\"";
 
-        private static string _cotTemplate = "<?xml version=\"1.0\" standalone=\"yes\"?><event version=\"2.0\" uid=\"{0}\" type=\"a-f-A\" how=\"m-r\" time=\"{1}\" start=\"{1}\" stale=\"{2}\"><point lat=\"{3}\" lon=\"{4}\" ce=20\" le=\"20\" hae=\"{5}\" /></event>\"";
+        private static string _cotTemplate = "<?xml version=\"1.0\" standalone=\"yes\"?><event version=\"2.0\" uid=\"{0}\" type=\"a-f-A\" how=\"m-r\" time=\"{1}\" start=\"{1}\" stale=\"{2}\"><point lat=\"{3}\" lon=\"{4}\" ce=\"20\" le=\"20\" hae=\"{5}\" /></event>";
          
         public static string GetCot(string uid, string time, string lat, string lng, string hae)
         {
@@ -24,10 +24,13 @@ namespace CoT
         }
 
         public static string GetCot(LocationObject location)
-        {
+        { 
+            var lastTime = DateTime.Parse(location.Lasttime);
+            var timeString = lastTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
             // Do we want to add anything to the callsign for the ID?
             //"<?xml version=\"1.0\" standalone=\"yes\"?><event version=\"2.0\" uid=\"{0}\" type=\"a-f-A\" how=\"m-r\" time=\"{1}\" start=\"{1}\" stale=\"{2}\"><point lat=\"{3}\" lon=\"{4}\" ce=20\" le=\"20\" hae=\"{5}\" /></event>\"";
-            return string.Format(_cotTemplate, location.Srccall, location.Lasttime, GetStaleTime(), location.Lat, location.Lng, location.Hae);
+            return string.Format(_cotTemplate, location.Srccall, timeString, GetStaleTime(), location.Lat, location.Lng, location.Hae);
         }
 
         private static string GetStaleTime()
