@@ -274,23 +274,19 @@ namespace APRSTracker
                 string comment = "";
                  
                 var elements = line.Split('/');
-
-                if (elements.Length == 4)
+                if (elements.Length == 2)
                 {
-                    // Sample of own location from file
                     /*
-                        [0]	"MyCall:WinMain:2014-06-14T15:29:55.108 [TransmitAPRS] KG6PPZ>APWW10,WIDE1-1,WIDE2-1:@152953h3635.52N"	 
-                        [1]	"08716.29Wk056"	 
-                        [2]	"000"	 
-                        [3]	"A=000708APRS-IS for Win32"	 
+                            [0]	"MyCall:WinMain:2014-05-31T19:03:00.367 [TransmitAPRS] KG6PPZ>APWW10,WIDE1-1,WIDE2-1:@190300h3635.50N"	
+                            [1]	"08716.35WkAPRS-IS for Win32"	                     
+                     */
 
-                        */
                     var dateIndex = elements[0].IndexOf(DateTime.Now.Year.ToString());
                     if (dateIndex >= 0)
                     {
                         var spaceIndex = elements[0].IndexOf(' ');
                         var thisTime = elements[0].Substring(dateIndex, elements[0].IndexOf(' ') - dateIndex);
-                        
+
                         //if we are going to process the line, log it
                         UpdateOutput("Processing log file line: " + line);
 
@@ -307,11 +303,11 @@ namespace APRSTracker
                         var index = elements[0].IndexOf('@');
 
                         if (index > 0)
-                        { 
+                        {
                             var timeLatPart = elements[0].Substring(index);
                             var timeSeparatorIndex = timeLatPart.IndexOf('h');
 
-                            if(timeSeparatorIndex > 0)
+                            if (timeSeparatorIndex > 0)
                             {
                                 var rawTime = timeLatPart.Substring(1, timeSeparatorIndex - 1);
                                 var rawLat = timeLatPart.Substring(timeSeparatorIndex + 1);
@@ -337,139 +333,241 @@ namespace APRSTracker
                             }
                         }
 
-                         // Assuming western hemisphere...
-                         index = elements[1].IndexOf('W');
-                         if (index > 0)
-                         {
+                        // Assuming western hemisphere...
+                        index = elements[1].IndexOf('W');
+                        if (index > 0)
+                        {
                             var rawLon = elements[1].Substring(0, index);
+                            
+                            var degrees = int.Parse(rawLon.Substring(0, 3));
+                            var decimalMinutes = decimal.Parse(rawLon.Substring(3));
+                            var decimalDegrees = degrees + (decimalMinutes / 60);
+                            // make longitude negative for western hemisphere
+                            decimalDegrees = decimalDegrees - (2 * decimalDegrees);
+
+                            //limit to 5 decimal places 
+                            lng = decimalDegrees.ToString("F5", System.Globalization.CultureInfo.InvariantCulture);
+
+                            // parse comment (this size message doesn't have altitude.
+                            if (elements[1].Length > index)
+                            {
+                                comment = elements[1].Substring(index + 1);
+                            }                          
+                        }
+
+                        // Srccall, Lat, Lng, Hae, Lasttime, Comment);
+                        var location = new LocationObject
+                        {
+                            Srccall = callsign,
+                            Lat = lat,
+                            Lng = lng,
+                            Hae = hae,
+                            Lasttime = time,
+                            Comment = comment
+                        };
+
+                        EmitCot(location);
+                    }
+
+                }
+                else if (elements.Length == 4)
+                {
+                    // Sample of own location from file 
+                    /*
+                        [0]	"MyCall:WinMain:2014-06-14T15:29:55.108 [TransmitAPRS] KG6PPZ>APWW10,WIDE1-1,WIDE2-1:@152953h3635.52N"	 
+                        [1]	"08716.29Wk056"	 
+                        [2]	"000"	 
+                        [3]	"A=000708APRS-IS for Win32"	 
+
+                        */
+                    var dateIndex = elements[0].IndexOf(DateTime.Now.Year.ToString());
+                    if (dateIndex >= 0)
+                    {
+                        var spaceIndex = elements[0].IndexOf(' ');
+                        var thisTime = elements[0].Substring(dateIndex, elements[0].IndexOf(' ') - dateIndex);
+
+                        //if we are going to process the line, log it
+                        UpdateOutput("Processing log file line: " + line);
+
+                        //Get callsign -  need entire callsign because chase car and balloon use same one
+                        // with different extension
+                        var callsignIndex = elements[0].IndexOf(textBoxCallsign.Text);
+                        if (callsignIndex >= 0)
+                        {
+                            var endCallsignIndex = elements[0].IndexOf('>');
+                            callsign = elements[0].Substring(callsignIndex, endCallsignIndex - callsignIndex);
+                        }
+
+                        // messages that parse into 4 elements have the time before the first '/'
+                        var index = elements[0].IndexOf('@');
+
+                        if (index > 0)
+                        {
+                            var timeLatPart = elements[0].Substring(index);
+                            var timeSeparatorIndex = timeLatPart.IndexOf('h');
+
+                            if (timeSeparatorIndex > 0)
+                            {
+                                var rawTime = timeLatPart.Substring(1, timeSeparatorIndex - 1);
+                                var rawLat = timeLatPart.Substring(timeSeparatorIndex + 1);
+
+                                // Get raw lat into a decimal string
+                                var degrees = int.Parse(rawLat.Substring(0, 2));
+                                var decimalMinutes = decimal.Parse(rawLat.Substring(2, rawLat.Length - 3));
+
+                                // limit to 5 decimal places
+                                var decimalDegrees = degrees + (decimalMinutes / 60);
+
+                                lat = decimalDegrees.ToString("F5", System.Globalization.CultureInfo.InvariantCulture);
+
+                                if (rawTime.Length == 6)
+                                {
+                                    var hour = int.Parse(rawTime.Substring(0, 2));
+                                    var minute = int.Parse(rawTime.Substring(2, 2));
+                                    var second = int.Parse(rawTime.Substring(4, 2));
+                                    DateTime msgTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, minute, second);
+
+                                    time = msgTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                                }
+                            }
+                        }
+
+                        // Assuming western hemisphere...
+                        index = elements[1].IndexOf('W');
+                        if (index > 0)
+                        { 
+                            var rawLon = elements[1].Substring(0, index);
+                            var degrees = int.Parse(rawLon.Substring(0, 3));
+                            var decimalMinutes = decimal.Parse(rawLon.Substring(3));
+                            var decimalDegrees = degrees + (decimalMinutes / 60);
+                            // make longitude negative for western hemisphere
+                            decimalDegrees = decimalDegrees - (2 * decimalDegrees);
+
+                            //limit to 5 decimal places 
+                            lng = decimalDegrees.ToString("F5", System.Globalization.CultureInfo.InvariantCulture);
+                             
+                        }
+
+                        // parse altitude and comment
+                        if (!string.IsNullOrEmpty(elements[3]))
+                        {
+                            hae = elements[3].Substring(elements[3].IndexOf("A=") + 2, 6);
+                            comment = elements[3].Substring(8);
+                        }
+
+                        // Srccall, Lat, Lng, Hae, Lasttime, Comment);
+                        var location = new LocationObject
+                        {
+                            Srccall = callsign,
+                            Lat = lat,
+                            Lng = lng,
+                            Hae = hae,
+                            Lasttime = time,
+                            Comment = comment
+                        };
+
+                        EmitCot(location);
+                    }
+                }
+
+
+                     // If there are 8 elements, we hope this is an expected position message...
+                else if (elements.Length == 8)
+                {
+                    // sample  of IGate data from file...
+                    /*
+                        [0]	"IGate:WinMain:2014-05-10T20:22:03.526 RFtoIS:[Mobilinkd]IGated KG6PPZ-11>KG6PPZ,WIDE2-1,qAR,KG6PPZ:"	
+                        [1]	"202201h3635.49N"	
+                        [2]	"08716.31WO000"	
+                        [3]	"000"	
+                        [4]	"A=000553"	
+                        [5]	"Ti=32"	
+                        [6]	"Te=70"	
+                        [7]	"V=11429 ForceX high altitude balloon test"	                          
+                             
+                     */
+
+                    var dateIndex = elements[0].IndexOf(DateTime.Now.Year.ToString());
+                    if (dateIndex >= 0)
+                    {
+                        var spaceIndex = elements[0].IndexOf(' ');
+                        var thisTime = elements[0].Substring(dateIndex, elements[0].IndexOf(' ') - dateIndex);
+
+                        // TODO: if we are going to process the line, log it
+                        UpdateOutput("Processing log file line: " + line);
+
+                        //Get callsign -  need entire callsign because chase car and balloon use same one
+                        // with different extension
+                        var callsignIndex = elements[0].IndexOf(textBoxCallsign.Text);
+                        if (callsignIndex >= 0)
+                        {
+                            var endCallsignIndex = elements[0].IndexOf('>');
+                            callsign = elements[0].Substring(callsignIndex, endCallsignIndex - callsignIndex);
+                        }
+
+                        var index = elements[1].IndexOf('h');
+                        if (index > 0)
+                        {
+                            var rawTime = elements[1].Substring(0, index);
+                            var rawLat = elements[1].Substring(index + 1);
+
+                            // Get raw lat into a decimal string
+                            var degrees = int.Parse(rawLat.Substring(0, 2));
+                            var decimalMinutes = decimal.Parse(rawLat.Substring(2, rawLat.Length - 3));
+
+                            // limit to 5 decimal places
+                            var decimalDegrees = degrees + (decimalMinutes / 60);
+
+                            lat = decimalDegrees.ToString("F5", System.Globalization.CultureInfo.InvariantCulture);
+
+                            if (rawTime.Length == 6)
+                            {
+                                var hour = int.Parse(rawTime.Substring(0, 2));
+                                var minute = int.Parse(rawTime.Substring(2, 2));
+                                var second = int.Parse(rawTime.Substring(4, 2));
+                                DateTime msgTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, minute, second);
+
+                                time = msgTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                            }
+                        }
+
+                        // Assuming western hemisphere...
+                        index = elements[2].IndexOf('W');
+                        if (index > 0)
+                        {
+                            var rawLon = elements[2].Substring(0, index);
                             var degrees = int.Parse(rawLon.Substring(0, 3));
                             var decimalMinutes = decimal.Parse(rawLon.Substring(3));
                             var decimalDegrees = degrees + (decimalMinutes / 60);
 
                             //limit to 5 decimal places 
                             lng = decimalDegrees.ToString("F5", System.Globalization.CultureInfo.InvariantCulture);
-                         }
-
-                         // parse altitude and comment
-                         if (!string.IsNullOrEmpty(elements[3]))
-                         {
-                             hae = elements[3].Substring(elements[3].IndexOf("A=") + 2, 6);  
-                             comment = elements[3].Substring(8);
-                         }
-                         
-                         // Srccall, Lat, Lng, Hae, Lasttime, Comment);
-                         var location = new LocationObject
-                         {
-                             Srccall = callsign,
-                             Lat = lat,
-                             Lng = lng,
-                             Hae = hae,
-                             Lasttime = time,
-                             Comment = comment
-                         };
-
-                            EmitCot(location);
                         }
-                    }
-                    
 
-                    // If there are 8 elements, we hope this is an expected position message...
-                    else if (elements.Length == 8)
-                    {
-                        // sample  of IGate data from file...
-                        /*
-                            [0]	"IGate:WinMain:2014-05-10T20:22:03.526 RFtoIS:[Mobilinkd]IGated KG6PPZ-11>KG6PPZ,WIDE2-1,qAR,KG6PPZ:"	
-                            [1]	"202201h3635.49N"	
-                            [2]	"08716.31WO000"	
-                            [3]	"000"	
-                            [4]	"A=000553"	
-                            [5]	"Ti=32"	
-                            [6]	"Te=70"	
-                            [7]	"V=11429 ForceX high altitude balloon test"	                          
-                             
-                         */
-                         
-                        var dateIndex = elements[0].IndexOf(DateTime.Now.Year.ToString());
-                        if (dateIndex >= 0)
+                        // parse altitude
+                        if (!string.IsNullOrEmpty(elements[4]))
                         {
-                            var spaceIndex = elements[0].IndexOf(' ');
-                            var thisTime = elements[0].Substring(dateIndex, elements[0].IndexOf(' ') - dateIndex); 
-
-                                // TODO: if we are going to process the line, log it
-                                UpdateOutput("Processing log file line: " + line);
-
-                                //Get callsign -  need entire callsign because chase car and balloon use same one
-                                // with different extension
-                                var callsignIndex = elements[0].IndexOf(textBoxCallsign.Text);
-                                if (callsignIndex >= 0)
-                                {
-                                    var endCallsignIndex = elements[0].IndexOf('>');
-                                    callsign = elements[0].Substring(callsignIndex, endCallsignIndex - callsignIndex);
-                                }
-
-                                var index = elements[1].IndexOf('h');
-                                if (index > 0)
-                                {
-                                    var rawTime = elements[1].Substring(0, index);
-                                    var rawLat = elements[1].Substring(index + 1);
-
-                                    // Get raw lat into a decimal string
-                                    var degrees = int.Parse(rawLat.Substring(0, 2));
-                                    var decimalMinutes = decimal.Parse(rawLat.Substring(2, rawLat.Length - 3));
-
-                                    // limit to 5 decimal places
-                                    var decimalDegrees = degrees + (decimalMinutes / 60);
-
-                                    lat = decimalDegrees.ToString("F5", System.Globalization.CultureInfo.InvariantCulture);
-
-                                    if (rawTime.Length == 6)
-                                    {
-                                        var hour = int.Parse(rawTime.Substring(0, 2));
-                                        var minute = int.Parse(rawTime.Substring(2, 2));
-                                        var second = int.Parse(rawTime.Substring(4, 2));
-                                        DateTime msgTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hour, minute, second);
-
-                                        time = msgTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                                    }
-                                }
-
-                                // Assuming western hemisphere...
-                                index = elements[2].IndexOf('W');
-                                if (index > 0)
-                                {
-                                    var rawLon = elements[2].Substring(0, index);
-                                    var degrees = int.Parse(rawLon.Substring(0, 3));
-                                    var decimalMinutes = decimal.Parse(rawLon.Substring(3));
-                                    var decimalDegrees = degrees + (decimalMinutes / 60);
-
-                                    //limit to 5 decimal places 
-                                    lng = decimalDegrees.ToString("F5", System.Globalization.CultureInfo.InvariantCulture);
-                                }
-
-                                // parse altitude
-                                if (!string.IsNullOrEmpty(elements[4]))
-                                {
-                                    hae = elements[4].Substring(elements[4].IndexOf("A=") + 2);
-                                }
-
-                                //TODO: looks like there is another field before the comment... what is it?
-                                comment = elements[7];
-
-                                // Srccall, Lat, Lng, Hae, Lasttime, Comment);
-                                var location = new LocationObject
-                                {
-                                    Srccall = callsign,
-                                    Lat = lat,
-                                    Lng = lng,
-                                    Hae = hae,
-                                    Lasttime = time,
-                                    Comment = comment
-                                };
-
-                                EmitCot(location);
-                            
+                            hae = elements[4].Substring(elements[4].IndexOf("A=") + 2);
                         }
+
+                        //TODO: looks like there is another field before the comment... what is it?
+                        comment = elements[7];
+
+                        // Srccall, Lat, Lng, Hae, Lasttime, Comment);
+                        var location = new LocationObject
+                        {
+                            Srccall = callsign,
+                            Lat = lat,
+                            Lng = lng,
+                            Hae = hae,
+                            Lasttime = time,
+                            Comment = comment
+                        };
+
+                        EmitCot(location);
+
                     }
+                }
                 
             }
             catch (Exception ex)
