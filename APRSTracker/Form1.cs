@@ -539,6 +539,8 @@ namespace APRSTracker
                             var degrees = int.Parse(rawLon.Substring(0, 3));
                             var decimalMinutes = decimal.Parse(rawLon.Substring(3));
                             var decimalDegrees = degrees + (decimalMinutes / 60);
+                            // Need negative longitude for W hemisphere
+                            decimalDegrees = decimalDegrees - (2 * decimalDegrees);
 
                             //limit to 5 decimal places 
                             lng = decimalDegrees.ToString("F5", System.Globalization.CultureInfo.InvariantCulture);
